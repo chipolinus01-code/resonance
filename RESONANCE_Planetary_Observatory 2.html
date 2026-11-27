@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b18">
+<title>RESONANCE — Planetary Observatory</title>
+<style>
+:root{color-scheme:dark;--bg:#080b18;--panel:rgba(20,27,51,.76);--line:rgba(167,190,255,.2);--gold:#d8bd83;--blue:#8eb8ff;--muted:#aab4cf}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 35%,#1b2850 0%,#0b1024 48%,#050711 100%);color:#eef2ff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(1px 1px at 12% 18%,#fff 98%,transparent),radial-gradient(1px 1px at 72% 12%,#cbdcff 98%,transparent),radial-gradient(2px 2px at 86% 67%,#fff 98%,transparent),radial-gradient(1px 1px at 34% 78%,#fff 98%,transparent),radial-gradient(1px 1px at 56% 48%,#fff 98%,transparent);background-size:230px 190px;opacity:.65}
+main{width:min(760px,100%);margin:auto;padding:28px 18px 48px;position:relative}
+header{text-align:center;padding:18px 0 10px}.eyebrow{letter-spacing:.34em;text-transform:uppercase;color:var(--gold);font-size:10px}
+h1{font-weight:300;letter-spacing:.22em;font-size:clamp(28px,7vw,42px);margin:12px 0 6px}.sub{color:var(--muted);font-size:12px;letter-spacing:.12em}
+.orbit-wrap{height:300px;display:grid;place-items:center;position:relative}
+.orbit{width:230px;height:230px;border:1px solid rgba(164,190,255,.24);border-radius:50%;position:relative;display:grid;place-items:center;box-shadow:0 0 65px rgba(94,135,255,.12),inset 0 0 50px rgba(94,135,255,.08)}
+.orbit:before,.orbit:after{content:"";position:absolute;border:1px solid rgba(216,189,131,.2);border-radius:50%;transform:rotate(-28deg);width:290px;height:95px}
+.orbit:after{transform:rotate(58deg);width:270px;height:120px;border-color:rgba(142,184,255,.18)}
+.core{width:112px;height:112px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f6e5bc,#b89b6a 24%,#4c527d 58%,#11172e 78%);box-shadow:0 0 38px rgba(216,189,131,.35),0 0 90px rgba(108,146,255,.18)}
+.planet{position:absolute;width:13px;height:13px;border-radius:50%;background:var(--gold);box-shadow:0 0 15px var(--gold);top:26px;left:45px}
+.label{position:absolute;color:#9daed8;font-size:9px;letter-spacing:.2em;text-transform:uppercase}.l1{top:12px}.l2{bottom:8px;right:4px}.l3{bottom:32px;left:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;backdrop-filter:blur(16px);box-shadow:0 14px 40px rgba(0,0,0,.18)}
+.section-title{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin:0 0 14px}
+.file-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input[type=file]{display:none}.file-btn,button{border:1px solid rgba(216,189,131,.5);background:rgba(216,189,131,.1);color:#f4e7ca;border-radius:12px;padding:12px 15px;font-size:13px;cursor:pointer}
+.file-name{color:var(--muted);font-size:12px;min-width:0;overflow-wrap:anywhere;flex:1}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}button.primary{background:linear-gradient(135deg,#c8ad78,#8d7959);color:#101426;border:0;font-weight:600}
+button:disabled{opacity:.35;cursor:not-allowed}input[type=range]{width:100%;accent-color:var(--gold)}
+.range-row{display:grid;grid-template-columns:70px 1fr 38px;gap:12px;align-items:center;color:var(--muted);font-size:11px;margin-top:14px}
+canvas{width:100%;height:100px;display:block;margin-top:8px}
+.status{color:var(--muted);font-size:11px;line-height:1.6;margin-top:12px}.status strong{color:#d8bd83;font-weight:500}
+footer{text-align:center;color:#66718f;font-size:10px;letter-spacing:.12em;margin-top:26px}
+@media(min-width:600px){main{padding-top:38px}.orbit-wrap{height:330px}}
+</style>
+</head>
+<body>
+<main>
+<header><div class="eyebrow">Sound • Space • Observation</div><h1>RESONANCE</h1><div class="sub">PLANETARY OBSERVATORY · VERSION 1.0</div></header>
+<section class="orbit-wrap" aria-label="Планетарная визуализация"><div class="orbit"><div class="core"></div><div class="planet"></div></div><span class="label l1">SOLAR FIELD</span><span class="label l2">AUDIO ORBIT</span><span class="label l3">RESONANCE / 01</span></section>
+<section class="card">
+<h2 class="section-title">01 / Источник звука</h2>
+<div class="file-row"><label class="file-btn" for="audioFile">Выбрать аудиофайл</label><input id="audioFile" type="file" accept="audio/*"><span class="file-name" id="fileName">Файл не выбран</span></div>
+<div class="controls"><button class="primary" id="play" disabled>Воспроизвести</button><button id="stop" disabled>Остановить</button></div>
+<div class="range-row"><span>ГРОМКОСТЬ</span><input id="volume" type="range" min="0" max="1" step=".01" value=".75"><span id="volumeValue">75%</span></div>
+<audio id="audio" playsinline></audio>
+<div class="status" id="status">Выбери аудиофайл. Для вывода на Soundcore подключи колонку к iPhone через Bluetooth и выбери её как устройство воспроизведения.</div>
+</section>
+<section class="card"><h2 class="section-title">02 / Спектральное поле</h2><canvas id="scope" width="700" height="180"></canvas><div class="status">Визуализация частот создаётся из воспроизводимого аудиосигнала. Она не измеряет магнитное поле и не управляет физическими объектами.</div></section>
+<section class="card"><h2 class="section-title">03 / Маршрут сигнала</h2><div class="status">iPhone → RESONANCE → Bluetooth audio → Soundcore Motion X600<br><br>Выбор Bluetooth-колонки выполняется в настройках вывода звука iOS. Веб-страница не может самостоятельно выполнить сопряжение или изменить настройки Bluetooth.</div></section>
+<footer>RESONANCE · PLANETARY OBSERVATORY</footer>
+</main>
+<script>
+(()=>{const input=document.getElementById('audioFile'),audio=document.getElementById('audio'),play=document.getElementById('play'),stop=document.getElementById('stop'),name=document.getElementById('fileName'),status=document.getElementById('status'),volume=document.getElementById('volume'),volumeValue=document.getElementById('volumeValue'),canvas=document.getElementById('scope'),ctx=canvas.getContext('2d');let objectUrl=null,ac=null,analyser=null,source=null;
+function setup(){if(ac)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC){status.textContent='Web Audio API не поддерживается этим браузером.';return}ac=new AC();analyser=ac.createAnalyser();analyser.fftSize=256;source=ac.createMediaElementSource(audio);source.connect(analyser);analyser.connect(ac.destination);draw()}
+function draw(){const data=new Uint8Array(analyser.frequencyBinCount);const w=canvas.width,h=canvas.height;function frame(){requestAnimationFrame(frame);analyser.getByteFrequencyData(data);ctx.clearRect(0,0,w,h);const gap=3,bw=(w/data.length)-gap;for(let i=0;i<data.length;i++){const v=data[i]/255,bar=v*h*.88;const grad=ctx.createLinearGradient(0,h-bar,0,h);grad.addColorStop(0,'#e5d0a2');grad.addColorStop(1,'#668acb');ctx.fillStyle=grad;ctx.fillRect(i*(bw+gap),h-bar,bw,bar)}}frame()}
+input.addEventListener('change',()=>{const f=input.files&&input.files[0];if(!f)return;if(objectUrl)URL.revokeObjectURL(objectUrl);objectUrl=URL.createObjectURL(f);audio.src=objectUrl;name.textContent=f.name;play.disabled=false;stop.disabled=false;status.textContent='Файл загружен. Нажми «Воспроизвести».'});
+play.addEventListener('click',async()=>{if(!audio.src)return;setup();if(ac&&ac.state==='suspended')await ac.resume();if(audio.paused){try{await audio.play();play.textContent='Пауза';status.textContent='Звук воспроизводится. Если подключена Soundcore, проверь выбранный аудиовыход iPhone.'}catch(e){status.textContent='Не удалось запустить звук: '+e.message}}else{audio.pause();play.textContent='Продолжить'}});
+stop.addEventListener('click',()=>{audio.pause();audio.currentTime=0;play.textContent='Воспроизвести'});
+audio.addEventListener('ended',()=>play.textContent='Воспроизвести');
+volume.addEventListener('input',()=>{audio.volume=Number(volume.value);volumeValue.textContent=Math.round(audio.volume*100)+'%'});
+audio.volume=.75;
+})();
+</script>
+</body></html>
